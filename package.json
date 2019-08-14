@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon src/index.js",
     "test": "npm run test"
   },
   "keywords": [
@@ -15,6 +16,7 @@
   "author": "Eraldo Forgoli",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
     "mongo": "^0.1.0",
     "mongoose": "^5.6.9",
