@@ -1,12 +1,13 @@
+require("../db/mongoose");
 const express = require("express");
 const router = new express.Router();
 const User = require("../models/user");
 
-router.get("", (request, response) => {
+router.get("", (_, response) => {
   response.send("Hey");
 });
 
-router.get("/users", async (request, response) => {
+router.get("/users", async (_, response) => {
   try {
     const users = await User.find();
     response.send(users);
