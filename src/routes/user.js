@@ -5,7 +5,6 @@ const User = require("../models/user");
 const auth = require("../middleware/auth");
 
 router.get("/users/me", auth, async (request, response) => {
-  console.log(process.env.DB_URL);
   response.send(request.user);
 });
 
