@@ -2,31 +2,38 @@ require("../db/mongoose");
 const express = require("express");
 const router = new express.Router();
 const User = require("../models/user");
+const auth = require("../middleware/auth");
 
-router.get("", (_, response) => {
-  response.send("Hey");
-});
-
-router.get("/users", async (_, response) => {
-  try {
-    const users = await User.find();
-    response.send(users);
-  } catch (error) {
-    response.status(500).send(error);
-  }
+router.get("/users/me", auth, async (request, response) => {
+  console.log(process.env.DB_URL);
+  response.send(request.user);
 });
 
 router.post("/users", async (request, response) => {
   const user = new User(request.body);
   try {
     await user.save();
-    response.status(200).send(user);
+    const token = await user.generateAuthToken();
+    response.status(200).send({ user, token });
   } catch (error) {
     response.status(400).send(error);
   }
 });
 
-router.patch("/users/:id", async (request, response) => {
+router.post("/users/login", async (request, response) => {
+  try {
+    const user = await User.findByCredentials(
+      request.body.email,
+      request.body.password
+    );
+    const token = await user.generateAuthToken();
+    response.send({ user, token });
+  } catch (error) {
+    response.status(400).send(error);
+  }
+});
+
+router.patch("/users/:id", auth, async (request, response) => {
   const id = request.params.id;
   const updates = Object.keys(request.body);
   const allowedUpdates = ["name", "email", "password"];
@@ -38,7 +45,7 @@ router.patch("/users/:id", async (request, response) => {
     return response.status(400).send({ error: "invalid updates" });
 
   try {
-    const user = await User.findById(request.params.id);
+    const user = await User.findById(id);
     updates.forEach(update => (user[update] = request.body[update]));
     await user.save();
   } catch (error) {
@@ -46,7 +53,7 @@ router.patch("/users/:id", async (request, response) => {
   }
 });
 
-router.delete("/users/:id", async (request, response) => {
+router.delete("/users/:id", auth, async (request, response) => {
   const id = request.params.id;
 
   try {
