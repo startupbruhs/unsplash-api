@@ -54,8 +54,7 @@ router.post("/users/logout-everywhere", auth, async (request, response) => {
   }
 });
 
-router.patch("/users/:id", auth, async (request, response) => {
-  const id = request.params.id;
+router.patch("/users/me", auth, async (request, response) => {
   const updates = Object.keys(request.body);
   const allowedUpdates = ["name", "email", "password"];
   const isValidOperation = updates.every(update =>
@@ -66,22 +65,19 @@ router.patch("/users/:id", auth, async (request, response) => {
     return response.status(400).send({ error: "invalid updates" });
 
   try {
-    const user = await User.findById(id);
+    const user = request.user;
     updates.forEach(update => (user[update] = request.body[update]));
     await user.save();
+    response.send(user);
   } catch (error) {
     response.status(400).send(error);
   }
 });
 
-router.delete("/users/:id", auth, async (request, response) => {
-  const id = request.params.id;
-
+router.delete("/users/me", auth, async (request, response) => {
   try {
-    const user = await User.findByIdAndDelete(id);
-    if (!user) {
-      return response.status(404).send();
-    }
+    await request.user.remove();
+    response.send(request.user);
   } catch (error) {
     response.status(500).send(error);
   }
