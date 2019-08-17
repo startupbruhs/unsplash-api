@@ -32,6 +32,28 @@ router.post("/users/login", async (request, response) => {
   }
 });
 
+router.post("/users/logout", auth, async (request, response) => {
+  try {
+    request.user.tokens = request.user.tokens.filter(
+      token => token.token !== request.token
+    );
+    await request.user.save();
+    response.send();
+  } catch (error) {
+    response.status(500).send();
+  }
+});
+
+router.post("/users/logout-everywhere", auth, async (request, response) => {
+  try {
+    request.user.tokens = [];
+    await request.user.save();
+    response.send();
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
 router.patch("/users/:id", auth, async (request, response) => {
   const id = request.params.id;
   const updates = Object.keys(request.body);

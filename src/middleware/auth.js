@@ -14,9 +14,10 @@ const auth = async (request, response, next) => {
     }
 
     request.user = user;
+    request.token = token;
     next();
   } catch (error) {
-    response.status(401).send(error);
+    response.status(401).send({error: 'Please authenticate!'});
   }
 };
 
