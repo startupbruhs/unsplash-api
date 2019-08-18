@@ -92,6 +92,13 @@ userSchema.pre("save", async function(next) {
   next();
 });
 
+// delete all associated items when deleting user
+userSchema.pre("remove", async function(next) {
+  const user = this;
+  // delete other stuff that have a user._id reference
+  next();
+});
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
