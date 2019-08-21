@@ -24,6 +24,7 @@ class User extends Service {
       const token = await user.generateAuthToken();
       return { user, token };
     });
+
     return { status, result };
   }
 }
