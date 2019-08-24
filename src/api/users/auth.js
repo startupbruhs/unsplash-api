@@ -1,7 +1,7 @@
 const express = require("express");
 const router = new express.Router();
 const auth = require("../../middlewares/auth");
-const userService = require("../../services/User")
+const userService = require("../../services/User");
 
 router.use(auth);
 
@@ -10,25 +10,13 @@ router.get("/users/me", async (request, response) => {
 });
 
 router.post("/users/logout", async (request, response) => {
-  try {
-    request.user.tokens = request.user.tokens.filter(
-      token => token.token !== request.token
-    );
-    await request.user.save();
-    response.send();
-  } catch (error) {
-    response.status(500).send();
-  }
+  const { status, result } = await userService.logout(request);
+  response.status(status).send(result);
 });
 
 router.post("/users/logout-everywhere", async (request, response) => {
-  try {
-    request.user.tokens = [];
-    await request.user.save();
-    response.send();
-  } catch (error) {
-    response.status(500).send(error);
-  }
+  const { status, result } = await userService.logoutEverywhere(request);
+  response.status(status).send(result);
 });
 
 router.patch("/users/me", async (request, response) => {
@@ -37,12 +25,8 @@ router.patch("/users/me", async (request, response) => {
 });
 
 router.delete("/users/me", async (request, response) => {
-  try {
-    await request.user.remove();
-    response.send(request.user);
-  } catch (error) {
-    response.status(500).send(error);
-  }
+  const { status, result } = await userService.deleteUser(request.user);
+  response.status(status).send(result);
 });
 
 module.exports = router;

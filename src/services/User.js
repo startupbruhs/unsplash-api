@@ -52,6 +52,40 @@ class User extends Service {
     );
     return isValidOperation;
   }
+
+  async logout(request) {
+    const { status, result } = await this.wrapWithServerErrorTryCatch(
+      async () => {
+        request.user.tokens = request.user.tokens.filter(
+          token => token.token !== request.token
+        );
+        await request.user.save();
+        return {};
+      }
+    );
+    return { status, result };
+  }
+
+  async logoutEverywhere(request) {
+    const { status, result } = await this.wrapWithServerErrorTryCatch(
+      async () => {
+        request.user.tokens = [];
+        await request.user.save();
+        return {};
+      }
+    );
+    return { status, result };
+  }
+
+  async deleteUser(user) {
+    const { status, result } = await this.wrapWithServerErrorTryCatch(
+      async () => {
+        await user.remove();
+        return { user };
+      }
+    );
+    return { status, result };
+  }
 }
 
 module.exports = new User();

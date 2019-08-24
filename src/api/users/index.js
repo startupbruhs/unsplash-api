@@ -3,10 +3,6 @@ const express = require("express");
 const router = new express.Router();
 const userService = require("../../services/User");
 
-router.get("/test", async (_, res) => {
-  res.send("Test");
-});
-
 router.post("/users", async (request, response) => {
   const { status, result } = await userService.create(request.body);
   response.status(status).send(result);
