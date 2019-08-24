@@ -1,8 +1,10 @@
 const express = require("express");
 const router = new express.Router();
 const auth = require("../../middlewares/auth");
+const userService = require("../../services/User")
 
 router.use(auth);
+
 router.get("/users/me", async (request, response) => {
   response.send(request.user);
 });
@@ -30,23 +32,8 @@ router.post("/users/logout-everywhere", async (request, response) => {
 });
 
 router.patch("/users/me", async (request, response) => {
-  const updates = Object.keys(request.body);
-  const allowedUpdates = ["name", "email", "password"];
-  const isValidOperation = updates.every(update =>
-    allowedUpdates.includes(update)
-  );
-
-  if (!isValidOperation)
-    return response.status(400).send({ error: "invalid updates" });
-
-  try {
-    const user = request.user;
-    updates.forEach(update => (user[update] = request.body[update]));
-    await user.save();
-    response.send(user);
-  } catch (error) {
-    response.status(400).send(error);
-  }
+  const { status, result } = await userService.updateUser(request);
+  response.status(status).send(result);
 });
 
 router.delete("/users/me", async (request, response) => {
