@@ -1,7 +1,9 @@
 const express = require("express");
 const router = new express.Router();
 const auth = require("../../middlewares/auth");
-const userService = require("../../services/User")
+const joi = require('joi')
+const validate = require("../../middlewares/validate");
+const userService = require("../../services/User");
 
 router.use(auth);
 
@@ -19,10 +21,20 @@ router.post("/users/logout-everywhere", async (request, response) => {
   response.status(status).send(result);
 });
 
-router.patch("/users/me", async (request, response) => {
-  const { status, result } = await userService.updateUser(request);
-  response.status(status).send(result);
-});
+router.patch(
+  "/users/me",
+  validate({
+    email: joi
+      .string()
+      .email(),
+    password: joi.string(),
+    name: joi.string()
+  }),
+  async (request, response) => {
+    const { status, result } = await userService.updateUser(request);
+    response.status(status).send(result);
+  }
+);
 
 router.delete("/users/me", async (request, response) => {
   const { status, result } = await userService.deleteUser(request.user);
