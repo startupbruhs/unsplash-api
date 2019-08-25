@@ -20,7 +20,8 @@ class User extends Service {
 
   async login({ email, password }) {
     const { status, result } = await this.wrapWithTryCatch(async () => {
-      const user = await User.findByCredentials(email, password);
+      const user = await this.model.findByCredentials(email, password);
+      console.log(user);
       const token = await user.generateAuthToken();
       return { user, token };
     }, 400);
@@ -31,10 +32,6 @@ class User extends Service {
   async updateUser(request) {
     const updates = Object.keys(request.body);
 
-    if (!this.isValidUpdate(updates)) {
-      return { status: 400, result: "Invalid updates" };
-    }
-
     const { status, result } = await this.wrapWithTryCatch(async () => {
       const user = request.user;
       updates.forEach(update => (user[update] = request.body[update]));
@@ -43,14 +40,6 @@ class User extends Service {
     }, 500);
 
     return { status, result };
-  }
-
-  isValidUpdate(updates) {
-    const allowedUpdates = ["name", "email", "password"];
-    const isValidOperation = updates.every(update =>
-      allowedUpdates.includes(update)
-    );
-    return isValidOperation;
   }
 
   async logout(request) {
