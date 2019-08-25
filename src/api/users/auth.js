@@ -1,7 +1,7 @@
 const express = require("express");
 const router = new express.Router();
 const auth = require("../../middlewares/auth");
-const joi = require('joi')
+const joi = require("joi");
 const validate = require("../../middlewares/validate");
 const userService = require("../../services/User");
 
@@ -24,9 +24,7 @@ router.post("/users/logout-everywhere", async (request, response) => {
 router.patch(
   "/users/me",
   validate({
-    email: joi
-      .string()
-      .email(),
+    email: joi.string().email(),
     password: joi.string(),
     name: joi.string()
   }),

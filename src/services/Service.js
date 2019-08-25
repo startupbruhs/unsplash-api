@@ -6,7 +6,7 @@ class Service {
       result = await call();
     } catch (error) {
       status = errorStatus;
-      result = error;
+      result = error.message;
     }
     return { status, result };
   }

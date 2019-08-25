@@ -1,5 +1,6 @@
 const userModel = require("../models/user");
 const Service = require("./Service");
+const HTTPStatus = require("http-status");
 
 class User extends Service {
   constructor() {
@@ -13,7 +14,7 @@ class User extends Service {
       await user.save();
       const token = await user.generateAuthToken();
       return { user, token };
-    }, 400);
+    }, HTTPStatus.INTERNAL_SERVER_ERROR);
 
     return { status, result };
   }
@@ -24,7 +25,7 @@ class User extends Service {
       console.log(user);
       const token = await user.generateAuthToken();
       return { user, token };
-    }, 400);
+    }, HTTPStatus.BAD_REQUEST);
 
     return { status, result };
   }
@@ -37,7 +38,7 @@ class User extends Service {
       updates.forEach(update => (user[update] = request.body[update]));
       await user.save();
       return { user };
-    }, 500);
+    }, HTTPStatus.INTERNAL_SERVER_ERROR);
 
     return { status, result };
   }
@@ -49,7 +50,7 @@ class User extends Service {
       );
       await request.user.save();
       return {};
-    }, 500);
+    }, HTTPStatus.INTERNAL_SERVER_ERROR);
     return { status, result };
   }
 
@@ -58,7 +59,7 @@ class User extends Service {
       request.user.tokens = [];
       await request.user.save();
       return {};
-    }, 500);
+    }, HTTPStatus.INTERNAL_SERVER_ERROR);
     return { status, result };
   }
 
@@ -66,7 +67,7 @@ class User extends Service {
     const { status, result } = await this.wrapWithTryCatch(async () => {
       await user.remove();
       return { user };
-    }, 500);
+    }, HTTPStatus.INTERNAL_SERVER_ERROR);
     return { status, result };
   }
 }
