@@ -13,7 +13,7 @@ class User extends Service {
       await user.save();
       const token = await user.generateAuthToken();
       return { user, token };
-    });
+    }, 400);
 
     return { status, result };
   }
@@ -23,7 +23,7 @@ class User extends Service {
       const user = await User.findByCredentials(email, password);
       const token = await user.generateAuthToken();
       return { user, token };
-    });
+    }, 400);
 
     return { status, result };
   }
@@ -40,7 +40,7 @@ class User extends Service {
       updates.forEach(update => (user[update] = request.body[update]));
       await user.save();
       return { user };
-    });
+    }, 500);
 
     return { status, result };
   }
@@ -54,36 +54,30 @@ class User extends Service {
   }
 
   async logout(request) {
-    const { status, result } = await this.wrapWithServerErrorTryCatch(
-      async () => {
-        request.user.tokens = request.user.tokens.filter(
-          token => token.token !== request.token
-        );
-        await request.user.save();
-        return {};
-      }
-    );
+    const { status, result } = await this.wrapWithTryCatch(async () => {
+      request.user.tokens = request.user.tokens.filter(
+        token => token.token !== request.token
+      );
+      await request.user.save();
+      return {};
+    }, 500);
     return { status, result };
   }
 
   async logoutEverywhere(request) {
-    const { status, result } = await this.wrapWithServerErrorTryCatch(
-      async () => {
-        request.user.tokens = [];
-        await request.user.save();
-        return {};
-      }
-    );
+    const { status, result } = await this.wrapWithTryCatch(async () => {
+      request.user.tokens = [];
+      await request.user.save();
+      return {};
+    }, 500);
     return { status, result };
   }
 
   async deleteUser(user) {
-    const { status, result } = await this.wrapWithServerErrorTryCatch(
-      async () => {
-        await user.remove();
-        return { user };
-      }
-    );
+    const { status, result } = await this.wrapWithTryCatch(async () => {
+      await user.remove();
+      return { user };
+    }, 500);
     return { status, result };
   }
 }

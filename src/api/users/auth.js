@@ -1,7 +1,7 @@
 const express = require("express");
 const router = new express.Router();
 const auth = require("../../middlewares/auth");
-const userService = require("../../services/User");
+const userService = require("../../services/User")
 
 router.use(auth);
 
