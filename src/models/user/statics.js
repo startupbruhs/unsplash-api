@@ -12,4 +12,4 @@ async function findByCredentials(email, password) {
   return user;
 }
 
-module.exports = { availableMethods: ["findByCredentials"], findByCredentials };
+module.exports = { findByCredentials };

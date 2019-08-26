@@ -21,7 +21,6 @@ async function generateAuthToken() {
 }
 
 module.exports = {
-  availableMethods: ["toJSON", "generateAuthToken"],
   toJSON,
   generateAuthToken
 };

@@ -1,11 +1,7 @@
 const bcrypt = require("bcryptjs");
 
 const triggers = {
-  events: ["pre"],
-  //register on what event will the triggers be used
   pre: {
-    methods: ["save", "remove"],
-    //register what methods will use the trigger
     save: async function(next) {
       const user = this;
 

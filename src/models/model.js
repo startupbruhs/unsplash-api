@@ -7,15 +7,19 @@ class Model {
     return this;
   }
   registerMethods(type, data) {
-    data.availableMethods.forEach(method => {
+    const availableMethods = Object.keys(data);
+    availableMethods.forEach(method => {
       this.schema[type][method] = data[method];
     });
     return;
   }
 
   registerTriggers(triggers) {
-    triggers.events.forEach(trigger => {
-      triggers[trigger].methods.forEach(method => {
+    const events = Object.keys(triggers);
+    let methods = [];
+    events.forEach(trigger => {
+      methods = Object.keys(triggers[trigger]);
+      methods.forEach(method => {
         this.schema[trigger](method, triggers[trigger][method]);
       });
     });
