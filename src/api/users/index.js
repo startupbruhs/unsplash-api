@@ -1,4 +1,3 @@
-const auth = require("./auth");
 const joi = require("joi");
 const express = require("express");
 const router = new express.Router();
@@ -40,4 +39,4 @@ router.post(
   }
 );
 
-module.exports = [router, auth];
+module.exports = router;

@@ -1,28 +1,25 @@
+const joi = require("joi");
 const express = require("express");
 const router = new express.Router();
-const auth = require("../../middlewares/auth");
-const joi = require("joi");
-const validate = require("../../middlewares/validate");
 const userService = require("../../services/User");
+const validate = require("../../middlewares/validate");
 
-router.use(auth);
-
-router.get("/users/me", async (request, response) => {
+router.get("/me", async (request, response) => {
   response.send(request.user);
 });
 
-router.post("/users/logout", async (request, response) => {
+router.post("/logout", async (request, response) => {
   const { status, result } = await userService.logout(request);
   response.status(status).send(result);
 });
 
-router.post("/users/logout-everywhere", async (request, response) => {
+router.post("/logout-everywhere", async (request, response) => {
   const { status, result } = await userService.logoutEverywhere(request);
   response.status(status).send(result);
 });
 
 router.patch(
-  "/users/me",
+  "/me",
   validate({
     email: joi.string().email(),
     password: joi.string(),
@@ -34,7 +31,7 @@ router.patch(
   }
 );
 
-router.delete("/users/me", async (request, response) => {
+router.delete("/me", async (request, response) => {
   const { status, result } = await userService.deleteUser(request.user);
   response.status(status).send(result);
 });
