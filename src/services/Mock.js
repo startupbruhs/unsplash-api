@@ -7,8 +7,11 @@ class Mock extends Service {
     this.model = mockModel;
   }
 
-  all() {
-    return mockModel.find({});
+  all(title = "") {
+    return mockModel.find(
+      { title: { $regex: new RegExp(title, "i") } },
+      null // { limit: 1 }
+    );
   }
 }
 

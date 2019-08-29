@@ -34,7 +34,7 @@ const schema = new Schema({
         throw new Error("password length > 6");
       }
       if (value.includes("password")) {
-        throw new Error("shoul not include password");
+        throw new Error("should not include password");
       }
     },
     trim: true

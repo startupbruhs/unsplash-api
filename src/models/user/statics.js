@@ -2,7 +2,6 @@ const bcrypt = require("bcryptjs");
 
 async function findByCredentials(email, password) {
   const user = await User.findOne({ email });
-
   if (!user) {
     throw new Error("Unable to log in");
   }

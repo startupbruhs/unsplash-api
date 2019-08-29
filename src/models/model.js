@@ -28,11 +28,17 @@ class Model {
 
   register(type, data) {
     switch (type) {
-      case "methods" || "statics":
+      case "methods":
+        return this.registerMethods(type, data);
+      case "statics":
         return this.registerMethods(type, data);
       case "triggers":
         return this.registerTriggers(data);
       default:
+        console.error(
+          `Please specify what you want to render\n
+          Options: (methods|statics|triggers) and pass the data`
+        );
         return;
     }
   }

@@ -25,7 +25,7 @@ class User extends Service {
       console.log(user);
       const token = await user.generateAuthToken();
       return { user, token };
-    }, HTTPStatus.BAD_REQUEST);
+    }, HTTPStatus.UNPROCESSABLE_ENTITY);
 
     return { status, result };
   }
