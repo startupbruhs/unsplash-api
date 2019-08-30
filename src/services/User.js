@@ -1,11 +1,11 @@
-const userModel = require("../models/user");
+const UserModel = require("../models/user");
 const Service = require("./Service");
 const HTTPStatus = require("http-status");
 
 class User extends Service {
   constructor() {
     super();
-    this.model = userModel;
+    this.model = new UserModel();
   }
 
   async create(data) {
@@ -22,10 +22,9 @@ class User extends Service {
   async login({ email, password }) {
     const { status, result } = await this.wrapWithTryCatch(async () => {
       const user = await this.model.findByCredentials(email, password);
-      console.log(user);
       const token = await user.generateAuthToken();
       return { user, token };
-    }, HTTPStatus.UNPROCESSABLE_ENTITY);
+    }, HTTPStatus.INTERNAL_SERVER_ERROR);
 
     return { status, result };
   }

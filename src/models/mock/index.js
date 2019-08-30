@@ -1,6 +1,5 @@
 const Model = require("../model");
-const schema = require("./schema");
 
-const Mock = new Model("Mock", schema);
+class Mock extends Model {}
 
-module.exports = Mock.save();
+module.exports = Mock;

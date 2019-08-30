@@ -1,50 +1,47 @@
-const { model } = require("mongoose");
+const ModelInterface = require("./interface");
+const fs = require("fs");
 
-class Model {
-  constructor(name, schema) {
-    this.schema = schema;
-    this.name = name;
-    return this;
-  }
-  registerMethods(type, data) {
-    const availableMethods = Object.keys(data);
-    availableMethods.forEach(method => {
-      this.schema[type][method] = data[method];
-    });
-    return;
+class Model extends ModelInterface {
+  constructor() {
+    super();
+    this.folders = [
+      { name: "methods", fallback: null },
+      { name: "statics", fallback: null },
+      { name: "triggers", fallback: null },
+      { name: "schema" }
+    ];
+    this.name = this.constructor.name;
+    this.props = this.getProps();
+    return this.init();
   }
 
-  registerTriggers(triggers) {
-    const events = Object.keys(triggers);
-    let methods = [];
-    events.forEach(trigger => {
-      methods = Object.keys(triggers[trigger]);
-      methods.forEach(method => {
-        this.schema[trigger](method, triggers[trigger][method]);
+  getProps() {
+    let props = {};
+    this.folders.forEach(folder => {
+      const path = `/${this.name.toLowerCase()}/${folder.name}.js`;
+      fs.access(__dirname + path, fs.F_OK, err => {
+        if (err) {
+          if (folder.fallback !== undefined) {
+            props[folder.name] = folder.fallback;
+          } else {
+            console.error(new Error(err));
+            return;
+          }
+        } else {
+          props[folder.name] = require(`./${path}`);
+        }
       });
     });
-    return;
+    return props;
   }
 
-  register(type, data) {
-    switch (type) {
-      case "methods":
-        return this.registerMethods(type, data);
-      case "statics":
-        return this.registerMethods(type, data);
-      case "triggers":
-        return this.registerTriggers(data);
-      default:
-        console.error(
-          `Please specify what you want to render\n
-          Options: (methods|statics|triggers) and pass the data`
-        );
-        return;
-    }
-  }
-
-  save() {
-    return model(this.name, this.schema);
+  init() {
+    Object.keys(this.props).forEach(prop => {
+      if (this.props[prop]) {
+        this.register(prop, this.props[prop]);
+      }
+    });
+    this.save();
   }
 }
 
