@@ -1,18 +1,15 @@
-const MockModel = require("../models/mock");
 const Service = require("./Service");
+const { Mock } = require("../loaders/models");
 
-class Mock extends Service {
+class MockService extends Service {
   constructor() {
     super();
-    this.model = new MockModel().props.schema;
+    this.model = Mock;
   }
 
   all(title = "") {
-    return this.model.find(
-      { title: { $regex: new RegExp(title, "i") } },
-      null // { limit: 1 }
-    );
+    return this.model.find({ title: { $regex: new RegExp(title, "i") } }, null);
   }
 }
 
-module.exports = new Mock();
+module.exports = new MockService();

@@ -1,6 +1,10 @@
 const { model } = require("mongoose");
 
 class ModelInterface {
+  constructor(props) {
+    this.props = props;
+  }
+
   registerMethods(type, data) {
     const availableMethods = Object.keys(data);
     availableMethods.forEach(method => {
@@ -39,9 +43,7 @@ class ModelInterface {
   }
 
   save() {
-    console.log(this.name, this.props.schema);
-    return this.props.schema;
-    // return model(this.name, this.props.schema);
+    return model(this.name, this.props.schema);
   }
 }
 

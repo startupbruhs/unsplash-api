@@ -1,11 +1,11 @@
-const UserModel = require("../models/user");
+const { User } = require("../loaders/models");
 const Service = require("./Service");
 const HTTPStatus = require("http-status");
 
-class User extends Service {
+class UserService extends Service {
   constructor() {
     super();
-    this.model = new UserModel();
+    this.model = User;
   }
 
   async create(data) {
@@ -71,4 +71,4 @@ class User extends Service {
   }
 }
 
-module.exports = new User();
+module.exports = new UserService();
