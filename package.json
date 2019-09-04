@@ -28,6 +28,8 @@
     "mongo": "^0.1.0",
     "mongoose": "^5.6.9",
     "nodemon": "^1.19.1",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0",
     "typedi": "^0.8.0",
     "validate": "^4.5.1",
     "validator": "^11.1.0"
